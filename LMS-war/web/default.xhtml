@@ -8,8 +8,8 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="./css/default.css"/>
-        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <h:outputStylesheet name="css/default.css"/>
+        <h:outputStylesheet name="css/cssLayout.css"/>
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
         <title><ui:insert name="title">West Coast Community Library</ui:insert></title>
     </h:head>
@@ -21,23 +21,23 @@
                     <p:growl id="messages"/>
 
                     <p:menubar>
-                        <p:submenu label="Members" icon="pi pi-fw pi-user">
-                            <p:menuitem value="Register Member" icon="pi pi-fw pi-user-plus"/>
-                            <p:menuitem value="Member List" icon="pi pi-fw pi-users"/>   
+                        <p:submenu label="Members" icon="fa fa-fw fa-user"> 
+                            <p:menuitem value="Register Member" url="#"/>
+                            <p:menuitem value="Member List" url="#"/>   
                         </p:submenu>
-                        
-                        <p:submenu label="Books" icon="pi pi-fw pi-book">
-                            <p:menuitem value="Book List" icon="pi pi-fw pi-inbox"/> 
+
+                        <p:submenu label="Books" icon="fa fa-fw fa-book">
+                            <p:menuitem value="Book List" url="#" /> 
                         </p:submenu>
-                        
-                        <p:submenu label="Lending" icon="pi pi-fw pi-file">
-                            <p:menuitem value="Lend a Book" icon="pi pi-fw pi-sign-out"/> 
-                            <p:menuitem value="Return a Book" icon="pi pi-fw pi-sign-in"/>
-                            <p:menuitem value="Lending List" icon="pi pi-fw pi-copy"/>
+
+                        <p:submenu label="Lending" icon="fa fa-fw fa-file-text-o">
+                            <p:menuitem value="Lend a Book" url="#"/> 
+                            <p:menuitem value="Return a Book" url="#"/>
+                            <p:menuitem value="Lending List" url="#"/>
                         </p:submenu>
 
                         <f:facet name="options">
-                            <p:button value="Logout" icon="pi pi-fw pi-sign-out" styleClass="ui-button-info"/>
+                            <p:button value="Logout" icon="fa fa-fw fa-sign-out"/>
                         </f:facet>
                     </p:menubar>
                 </h:form>
