@@ -28,7 +28,7 @@ public class Member implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
     @Column(nullable = false, length = 32)
-    private String firsName;
+    private String firstName;
     @Column(nullable = false, length = 32)
     private String lastName;
     @Column(nullable = false)
@@ -83,12 +83,12 @@ public class Member implements Serializable {
         return "entity.Member[ id=" + memberId + " ]";
     }
 
-    public String getFirsName() {
-        return firsName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirsName(String firsName) {
-        this.firsName = firsName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {

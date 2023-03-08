@@ -28,5 +28,7 @@ public interface MemberSessionBeanLocal {
     public List<Member> retrieveMembersByName(String name);
 
     public Member retrieveMemberByIdentityNo(String identity) throws MemberNotFoundException;
+
+    public void updateMember(Member newM) throws MemberNotFoundException;
     
 }

@@ -29,7 +29,7 @@ public class MemberSessionBean implements MemberSessionBeanLocal {
     private EntityManager em;
 
     @Override
-    public Long createNewMember(Member member) throws MemberIdentityExistException, UnknownPersistenceException{
+    public Long createNewMember(Member member) throws MemberIdentityExistException, UnknownPersistenceException {
 
         try {
             em.persist(member);
@@ -45,6 +45,21 @@ public class MemberSessionBean implements MemberSessionBeanLocal {
             } else {
                 throw new UnknownPersistenceException(ex.getMessage());
             }
+        }
+    }
+
+    @Override
+    public void updateMember(Member newM) throws MemberNotFoundException {
+        try {
+            Member m = retrieveMemberById(newM.getMemberId());
+            m.setFirstName(newM.getFirstName());
+            m.setLastName(newM.getLastName());
+            m.setGender(newM.getGender());
+            m.setIdentityNo(newM.getIdentityNo());
+            m.setPhone(newM.getPhone());
+            m.setAddress(newM.getAddress());
+        } catch (MemberNotFoundException e) {
+            throw new MemberNotFoundException(e.getMessage());
         }
     }
 
@@ -88,7 +103,7 @@ public class MemberSessionBean implements MemberSessionBeanLocal {
         }
         return members;
     }
-    
+
     @Override
     public Member retrieveMemberByIdentityNo(String identity) throws MemberNotFoundException {
         Query query = em.createQuery("SELECT m FROM Member m WHERE LOWER(m.identityNo) = :inIdentity");

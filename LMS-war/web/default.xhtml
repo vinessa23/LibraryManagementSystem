@@ -8,9 +8,9 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="css/default.css"/>
-        <h:outputStylesheet name="css/cssLayout.css"/>
-        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+        <!--        <h:outputStylesheet name="css/default.css"/>
+                <h:outputStylesheet name="css/cssLayout.css"/>
+                <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>-->
         <title><ui:insert name="title">West Coast Community Library</ui:insert></title>
     </h:head>
 
@@ -19,10 +19,14 @@
             <div class="card">
                 <h:form>
                     <p:growl id="messages"/>
-
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:outputLabel value="West Coast Community Library" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
                     <p:menubar>
                         <p:submenu label="Members" icon="fa fa-fw fa-user"> 
-                            <p:menuitem value="Register Member" url="#"/>
+                            <p:menuitem value="Register Member" url="registerMember.xhtml"/>
                             <p:menuitem value="Member List" url="#"/>   
                         </p:submenu>
 
@@ -30,7 +34,7 @@
                             <p:menuitem value="Book List" url="#" /> 
                         </p:submenu>
 
-                        <p:submenu label="Lending" icon="fa fa-fw fa-file-text-o">
+                        <p:submenu label="Lending" icon="fa fa-fw fa-list-alt">
                             <p:menuitem value="Lend a Book" url="#"/> 
                             <p:menuitem value="Return a Book" url="#"/>
                             <p:menuitem value="Lending List" url="#"/>
