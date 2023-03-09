@@ -12,8 +12,8 @@
     </ui:define>
 
     <ui:define name="content">
-        <h:form id="form">
-            <p:growl id="growl" showDetail="true" sticky="true" />
+<!--        <p:growl for="growl" showDetail="true" />-->
+        <h:form id="form"> 
             <p:panelGrid columns="2">
                 <f:facet name="header">
                     Register New Member
@@ -72,7 +72,7 @@
             <br />
             <p:commandButton value="Submit"
                              action="#{memberManagedBean.registerMember}"
-                             update=":form"
+                             update="form"
                              ajax="false"
                              />
         </h:form>

@@ -26,8 +26,8 @@ import session.MemberSessionBeanLocal;
  * @author vinessa
  */
 @Named(value = "memberManagedBean")
-@RequestScoped
-public class MemberManagedBean {
+@ViewScoped
+public class MemberManagedBean implements Serializable {
 
     @EJB
     private MemberSessionBeanLocal memberSessionBeanLocal;
@@ -44,22 +44,41 @@ public class MemberManagedBean {
     private Long memberId;
     private Member selectedMember;
     
+    private String searchType = "NAME";
+    private String searchString;
+    
     public MemberManagedBean() {
     }
     
     @PostConstruct
     public void init() {
-        setMembers(memberSessionBeanLocal.retrieveAllMembers()); //get all customers
+        if (searchString == null || searchString.equals("")) {
+            members = memberSessionBeanLocal.retrieveAllMembers();
+        } else {
+            switch (searchType) {
+                case "NAME":
+                    members = memberSessionBeanLocal.retrieveMembersByName(searchString);
+                    break;
+                case "IDENTITYNO": {
+                    members = memberSessionBeanLocal.retrieveMembersByIdentityNo(searchString);
+                    break;
+                }
+            }
+        }
+    }
+    
+    public void handleSearch() {
+        init();
     }
     
     public String registerMember() {
         FacesContext context = FacesContext.getCurrentInstance();
         Member m = new Member();
-        m.setFirstName(firstName);
-        m.setLastName(lastName);
+        m.setFirstName(firstName.trim());
+        m.setLastName(lastName.trim());
         m.setGender(Character.toUpperCase(gender));
         m.setAge(age);
-        m.setIdentityNo(identityNo);
+        m.setIdentityNo(identityNo.trim());
         m.setPhone(phone);
         m.setAddress(address);
         
@@ -67,10 +86,10 @@ public class MemberManagedBean {
             memberSessionBeanLocal.createNewMember(m);
         } catch (MemberIdentityExistException | UnknownPersistenceException e) {
             //show with an error icon
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
+            context.addMessage("growl", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.getMessage()));
             return null;
         }
-        context.addMessage(null, new FacesMessage("Success",
+        context.addMessage("growl", new FacesMessage("Success",
                 "Successfully registered member"));
         return "memberList.xhtml?faces-redirect=true";
     }
@@ -192,6 +211,22 @@ public class MemberManagedBean {
 
     public void setSelectedMember(Member selectedMember) {
         this.selectedMember = selectedMember;
+    }
+
+    public String getSearchType() {
+        return searchType;
+    }
+
+    public void setSearchType(String searchType) {
+        this.searchType = searchType;
+    }
+
+    public String getSearchString() {
+        return searchString;
+    }
+
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
     }
     
 }

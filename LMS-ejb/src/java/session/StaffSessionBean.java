@@ -27,29 +27,29 @@ public class StaffSessionBean implements StaffSessionBeanLocal {
 
     //retrieve by non-ID that must be unique
     @Override
-    public Staff retrieveStaffByEmail(String email) throws StaffNotFoundException {
-        Query query = em.createQuery("SELECT c FROM Staff c WHERE LOWER(c.email) = :inEmail");
-        query.setParameter("inEmail", email.toLowerCase());
+    public Staff retrieveStaffByUsername(String username) throws StaffNotFoundException {
+        Query query = em.createQuery("SELECT c FROM Staff c WHERE LOWER(c.username) = :inUsername");
+        query.setParameter("inUsername", username.toLowerCase());
         try {
             Staff staff = (Staff) query.getSingleResult();
             return staff;
         } catch (NoResultException | NonUniqueResultException ex) {
-            throw new StaffNotFoundException("Staff email " + email + " does not exist!");
+            throw new StaffNotFoundException("Staff username " + username + " does not exist!");
         }
     }
 
     @Override
-    public Staff staffLogin(String email, String password) throws InvalidLoginException {
+    public Staff staffLogin(String username, String password) throws InvalidLoginException {
         try {
-            Staff staff = retrieveStaffByEmail(email);
+            Staff staff = retrieveStaffByUsername(username);
 
             if (staff.getPassword().equals(password)) {
                 return staff;
             } else {
-                throw new InvalidLoginException("Email does not exist or invalid password!");
+                throw new InvalidLoginException("Username does not exist or invalid password!");
             }
         } catch (StaffNotFoundException ex) {
-            throw new InvalidLoginException("Email does not exist or invalid password!");
+            throw new InvalidLoginException("Username does not exist or invalid password!");
         }
     }
 

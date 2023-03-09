@@ -17,8 +17,8 @@ import javax.ejb.Local;
 @Local
 public interface StaffSessionBeanLocal {
 
-    public Staff retrieveStaffByEmail(String email) throws StaffNotFoundException;
+    public Staff staffLogin(String username, String password) throws InvalidLoginException;
 
-    public Staff staffLogin(String email, String password) throws InvalidLoginException;
+    public Staff retrieveStaffByUsername(String username) throws StaffNotFoundException;
     
 }

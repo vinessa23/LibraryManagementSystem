@@ -87,11 +87,12 @@ public class MemberSessionBean implements MemberSessionBeanLocal {
     }
 
     //if null then get all members
+    //TODO: will it work if the admin key in both first and last name
     @Override
     public List<Member> retrieveMembersByName(String name) {
         Query q;
         if (name != null) {
-            q = em.createQuery("SELECT m FROM Member m WHERE LOWER(m.firstName) LIKE :name OR LOWER(m.lastName) LIKE :name");
+            q = em.createQuery("SELECT m FROM Member m WHERE LOWER(m.firstName) LIKE :name OR LOWER(m.lastName) LIKE :name OR CONCAT(LOWER(m.firstName), ' ', LOWER(m.lastName)) LIKE :name");
             q.setParameter("name", "%" + name.toLowerCase() + "%");
         } else {
             q = em.createQuery("SELECT m FROM Member m");
@@ -115,5 +116,16 @@ public class MemberSessionBean implements MemberSessionBeanLocal {
         } catch (NoResultException | NonUniqueResultException ex) {
             throw new MemberNotFoundException("Member identity " + identity + " does not exist!");
         }
+    }
+    
+    @Override
+    public List<Member> retrieveMembersByIdentityNo(String identity) {
+        Query query = em.createQuery("SELECT m FROM Member m WHERE LOWER(m.identityNo) LIKE :inIdentity");
+        query.setParameter("inIdentity", "%" + identity.toLowerCase() + "%");
+        List<Member> members = query.getResultList();
+        for (Member c : members) {
+            c.getLending().size(); //for to many relationship
+        }
+        return members;
     }
 }

@@ -27,7 +27,7 @@
                     <p:menubar>
                         <p:submenu label="Members" icon="fa fa-fw fa-user"> 
                             <p:menuitem value="Register Member" url="registerMember.xhtml"/>
-                            <p:menuitem value="Member List" url="#"/>   
+                            <p:menuitem value="Member List" url="memberList.xhtml"/>   
                         </p:submenu>
 
                         <p:submenu label="Books" icon="fa fa-fw fa-book">
@@ -41,8 +41,14 @@
                         </p:submenu>
 
                         <f:facet name="options">
-                            <p:button value="Logout" icon="fa fa-fw fa-sign-out"/>
-                        </f:facet>
+                            <p:commandButton value="Logout"
+                                         icon="fa fa-fw fa-sign-out"
+                                         action="#{authenticationManagedBean.logout}"
+                                         update="form"
+                                         ajax="false"
+                             />
+<!--                            <p:button value="Logout" icon="fa fa-fw fa-sign-out"/>-->
+                        </f:facet>  
                     </p:menubar>
                 </h:form>
             </div>
