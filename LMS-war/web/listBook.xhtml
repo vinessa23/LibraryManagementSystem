@@ -2,14 +2,53 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./default.xhtml">
+                template="./default.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="title">
         Book List
     </ui:define>
 
     <ui:define name="content">
-        Book List
+        <h:form id="form">
+            <p:growl id="growl" showDetail="true" sticky="true" />
+
+            <p:dataTable widgetVar="booksTable" var="book" value="#{bookManagedBean.books}" resizableColumns="true" emptyMessage="No books found with given criteria">
+                <f:facet name="header">
+                    <p:outputPanel style="text-align: right;">
+                        <h:outputText value="Search: " />
+                        <h:selectOneMenu value="#{bookManagedBean.searchType}">
+                            <f:selectItem itemValue="TITLE" itemLabel="Title" />
+                            <f:selectItem itemValue="AUTHOR" itemLabel="Author" />
+                            <f:selectItem itemValue="ISBN" itemLabel="ISBN" />
+                            <p:ajax listener="#{bookManagedBean.handleSearch}" update="form"/>
+                        </h:selectOneMenu>
+                        <p:inputText placeholder="Enter keywords" value="#{bookManagedBean.searchString}">
+                            <p:ajax event="keyup" update="form" listener="#{bookManagedBean.handleSearch}" />
+                        </p:inputText>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="Id">
+                    <h:outputText value="#{book.bookId}" />
+                </p:column>
+
+                <p:column headerText="Title">
+                    <h:outputText value="#{book.title}" />
+                </p:column>
+
+                <p:column headerText="Author">
+                    <h:outputText value="#{book.author}" />
+                </p:column>
+
+                <p:column headerText="ISBN">
+                    <h:outputText value="#{book.isbn}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
     </ui:define>
 
 </ui:composition>

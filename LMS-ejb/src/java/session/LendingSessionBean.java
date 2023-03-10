@@ -104,6 +104,17 @@ public class LendingSessionBean implements LendingSessionBeanLocal {
     }
     
     @Override
+    public List<Book> retrieveBooksByISBN(String isbn) {
+        Query query = em.createQuery("SELECT m FROM Book m WHERE LOWER(m.isbn) LIKE :isbn");
+        query.setParameter("isbn", "%" + isbn.toLowerCase() + "%");
+        List<Book> books = query.getResultList();
+        for (Book b : books) {
+            b.getLending().size(); //for to many relationship
+        }
+        return books;
+    }
+    
+    @Override
     public LendAndReturn retrieveLendingByBook(Book book) throws LendingNotFoundException {
         //find lending details that match this book and hasnt been return yet
         Query query = em.createQuery("SELECT l FROM LendAndReturn l WHERE l.bookId = :bookId AND l.returnDate IS NULL");

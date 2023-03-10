@@ -42,5 +42,7 @@ public interface LendingSessionBeanLocal {
     public List<Book> getLendedBooks();
 
     public List<Book> getAvailableBooks();
+
+    public List<Book> retrieveBooksByISBN(String isbn);
     
 }

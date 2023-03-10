@@ -13,7 +13,7 @@
     </ui:define>
 
     <ui:define name="content">
-                <h:form id="form">
+        <h:form id="form">
             <p:growl id="growl" showDetail="true" sticky="true" />
 
             <p:dataTable widgetVar="membersTable" var="member" value="#{memberManagedBean.members}" resizableColumns="true" emptyMessage="No members found with given criteria">
@@ -38,7 +38,7 @@
                 <p:column headerText="First Name">
                     <h:outputText value="#{member.firstName}" />
                 </p:column>
-                
+
                 <p:column headerText="Last Name">
                     <h:outputText value="#{member.lastName}" />
                 </p:column>
@@ -47,7 +47,7 @@
                     <h:outputText value="Female" rendered="#{member.gender == 'F'}" />
                     <h:outputText value="Male" rendered="#{member.gender == 'M'}" />
                 </p:column>
-              
+
 
                 <p:column>
                     <p:commandButton icon="fa fa-fw fa-search" update=":form:memberDetails" oncomplete="PF('memberDialog').show()" title="View">
