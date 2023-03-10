@@ -106,7 +106,7 @@ public class MemberManagedBean implements Serializable {
             phone = this.getSelectedMember().getPhone();
             address = this.getSelectedMember().getAddress();
         } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to load customer"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to load member"));
         }
     } //end loadSelectedMember
 
@@ -124,13 +124,13 @@ public class MemberManagedBean implements Serializable {
             memberSessionBeanLocal.updateMember(m);
         } catch (Exception e) {
             //show with an error icon
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to update customer"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to update member"));
             return;
         }
         //need to make sure reinitialize the customers collection
         init();
         context.addMessage(null, new FacesMessage("Success",
-                "Successfully updated customer"));
+                "Successfully updated member"));
     }
 
     public String getFirstName() {
