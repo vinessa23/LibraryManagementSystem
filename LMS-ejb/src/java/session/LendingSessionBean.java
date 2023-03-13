@@ -8,9 +8,11 @@ package session;
 import entity.Book;
 import entity.LendAndReturn;
 import entity.Member;
+import error.BookNotAvailableForLendException;
 import error.BookNotFoundException;
 import error.FineNotPaidException;
 import error.LendingNotFoundException;
+import error.MemberExceedLendLimitException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -24,7 +26,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.faces.context.FacesContext;
 
 /**
  *
@@ -129,17 +130,17 @@ public class LendingSessionBean implements LendingSessionBeanLocal {
     }
     
     @Override
-    public void lendBooks(Member m, List<Book> books) {
+    public void lendBooks(Member m, List<Book> books) throws BookNotAvailableForLendException, MemberExceedLendLimitException {
         // check whether the books are available
         for (Book b : books) {
             if(!isBookAvailable(b)) {
-                //return error
+                throw new BookNotAvailableForLendException("Book title " + b.getTitle() + " is not currently available for lend!");
             }
         }
         //check that member only lend 2 books
         int numBooksLended = numLendedBooksMember(m);
         if(books.size() + numBooksLended > 2) {
-            //return error
+            throw new MemberExceedLendLimitException("This member exceeds lend limit of 2 books");
         }
         
         for (Book b : books) {

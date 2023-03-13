@@ -8,9 +8,11 @@ package session;
 import entity.Book;
 import entity.LendAndReturn;
 import entity.Member;
+import error.BookNotAvailableForLendException;
 import error.BookNotFoundException;
 import error.FineNotPaidException;
 import error.LendingNotFoundException;
+import error.MemberExceedLendLimitException;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.ejb.Local;
@@ -50,6 +52,6 @@ public interface LendingSessionBeanLocal {
 
     public boolean isBookAvailable(Book book);
 
-    public void lendBooks(Member m, List<Book> books);
+    public void lendBooks(Member m, List<Book> books) throws BookNotAvailableForLendException, MemberExceedLendLimitException;
     
 }

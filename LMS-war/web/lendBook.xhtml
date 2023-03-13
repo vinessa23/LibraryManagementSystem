@@ -2,14 +2,184 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./default.xhtml">
+                template="./default.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="title">
         Lend Book
     </ui:define>
 
     <ui:define name="content">
-        Lend Book
-    </ui:define>
+        <div class="card">
+            <h2 class="mt-0">Lend Book</h2>
+            <p:tabView id="tabView" widgetVar="lendBookTabView" activeIndex="#{lendingManagedBean.activeIndex}"> 
+                <p:tab title="Select Member">
+                    <h:form id="form1">
+                        <p:growl id="growl" showDetail="true" sticky="true" />
 
+                        <p:dataTable id="membersLendTable" widgetVar="membersLendTable" var="member" value="#{lendingManagedBean.members}" resizableColumns="true" emptyMessage="No members found with given criteria"
+                                     selection="#{lendingManagedBean.selectedMember}" rowKey="#{member.memberId}">
+                            <f:facet name="header">
+                                <p:outputPanel style="text-align: right;">
+                                    <h:outputText value="Search: " />
+                                    <h:selectOneMenu value="#{lendingManagedBean.memberSearchType}">
+                                        <f:selectItem itemValue="NAME" itemLabel="Name" />
+                                        <f:selectItem itemValue="IDENTITYNO" itemLabel="NRIC/Passport" />
+                                        <p:ajax listener="#{lendingManagedBean.handleSearch}" update=":tabView:form1"/>
+                                    </h:selectOneMenu>
+                                    <p:inputText placeholder="Enter keywords" value="#{lendingManagedBean.memberSearchString}">
+                                        <p:ajax event="keyup" update=":tabView:form1" listener="#{lendingManagedBean.handleSearch}" />
+                                    </p:inputText>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:ajax event="rowSelectRadio" listener="#{lendingManagedBean.memberRowSelect}" update=":tabView:form1:membersLendTable"/>
+
+                            <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                            <p:column headerText="Id" style="width:30px;">
+                                <h:outputText value="#{member.memberId}" />
+                            </p:column>
+
+                            <p:column headerText="First Name">
+                                <h:outputText value="#{member.firstName}" />
+                            </p:column>
+
+                            <p:column headerText="Last Name">
+                                <h:outputText value="#{member.lastName}" />
+                            </p:column>
+
+                            <p:column headerText="Gender">
+                                <h:outputText value="Female" rendered="#{member.gender == 'F'}" />
+                                <h:outputText value="Male" rendered="#{member.gender == 'M'}" />
+                            </p:column>
+
+                            <p:column headerText="Identity Number">
+                                <h:outputText value="#{member.identityNo}" />
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton value="Next"
+                                         action="#{lendingManagedBean.submitLendMember()}"
+                                         ajax="false"
+                                         style="float:right;"
+                                         />
+                    </h:form>
+                </p:tab>
+                <p:tab title="Select Books">
+                    <h:form id="form2">
+                        <p:growl id="growl" showDetail="true" sticky="true" />
+
+                        <p:dataTable id="booksLendTable" widgetVar="booksLendTable" var="book" value="#{lendingManagedBean.books}" resizableColumns="true" emptyMessage="No books found with given criteria"
+                                     selection="#{lendingManagedBean.selectedBooks}" rowKey="#{book.bookId}">
+                            <f:facet name="header">
+                                <p:outputPanel style="text-align: right;">
+                                    <h:outputText value="Search: " />
+                                    <h:selectOneMenu value="#{bookManagedBean.searchType}">
+                                        <f:selectItem itemValue="TITLE" itemLabel="Title" />
+                                        <f:selectItem itemValue="AUTHOR" itemLabel="Author" />
+                                        <f:selectItem itemValue="ISBN" itemLabel="ISBN" />
+                                        <p:ajax listener="#{bookManagedBean.handleSearch}" update=":tabView:form2:booksLendTable"/>
+                                    </h:selectOneMenu>
+                                    <p:inputText placeholder="Enter keywords" value="#{bookManagedBean.searchString}">
+                                        <p:ajax event="keyup" update=":tabView:form2" listener="#{bookManagedBean.handleSearch}" />
+                                    </p:inputText>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:ajax event="rowSelectCheckbox" listener="#{lendingManagedBean.bookRowSelect}" update=":tabView:form2:booksLendTable"/>
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center" />
+
+                            <p:column headerText="Id" style="width:30px;">
+                                <h:outputText value="#{book.bookId}" />
+                            </p:column>
+
+                            <p:column headerText="Title">
+                                <h:outputText value="#{book.title}" />
+                            </p:column>
+
+                            <p:column headerText="Author">
+                                <h:outputText value="#{book.author}" />
+                            </p:column>
+
+                            <p:column headerText="ISBN">
+                                <h:outputText value="#{book.isbn}" />
+                            </p:column>
+
+                            <p:column headerText="Status">
+                                <h:outputText value="Available" rendered="#{lendingManagedBean.isBookAvailable(book)}" />
+                                <h:outputText value="Not Available" rendered="#{!lendingManagedBean.isBookAvailable(book)}" />
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton value="Next"
+                                         action="#{lendingManagedBean.submitLendBooks}"
+                                         ajax="false"
+                                         style="float:right;"
+                                         />
+                    </h:form>
+                </p:tab>
+                <p:tab title="Confirmation">
+                    <h3 class="mt-0">Member Details</h3>
+                    <p:dataTable id="membersLendTable" widgetVar="membersLendTable" var="member" value="#{lendingManagedBean.selectedMember}" resizableColumns="true" emptyMessage="No member selected">
+                        <p:column headerText="Id" style="width:30px;">
+                            <h:outputText value="#{member.memberId}" />
+                        </p:column>
+
+                        <p:column headerText="First Name">
+                            <h:outputText value="#{member.firstName}" />
+                        </p:column>
+
+                        <p:column headerText="Last Name">
+                            <h:outputText value="#{member.lastName}" />
+                        </p:column>
+
+                        <p:column headerText="Gender">
+                            <h:outputText value="Female" rendered="#{member.gender == 'F'}" />
+                            <h:outputText value="Male" rendered="#{member.gender == 'M'}" />
+                        </p:column>
+
+                        <p:column headerText="Identity Number">
+                            <h:outputText value="#{member.identityNo}" />
+                        </p:column>
+                    </p:dataTable>
+
+                    <h3 class="mt-0">Book Details</h3>
+                    <p:dataTable id="booksLendTable" widgetVar="booksLendTable" var="book" value="#{lendingManagedBean.selectedBooks}" resizableColumns="true" emptyMessage="No books selected">
+                        <p:column headerText="Id" style="width:30px;">
+                            <h:outputText value="#{book.bookId}" />
+                        </p:column>
+
+                        <p:column headerText="Title">
+                            <h:outputText value="#{book.title}" />
+                        </p:column>
+
+                        <p:column headerText="Author">
+                            <h:outputText value="#{book.author}" />
+                        </p:column>
+
+                        <p:column headerText="ISBN">
+                            <h:outputText value="#{book.isbn}" />
+                        </p:column>
+
+                        <p:column headerText="Status">
+                            <h:outputText value="Available" rendered="#{lendingManagedBean.isBookAvailable(book)}" />
+                            <h:outputText value="Not Available" rendered="#{!lendingManagedBean.isBookAvailable(book)}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </div>
+        <!--            <div class="card">
+                        <p:tabMenu activeIndex="#{param.i}">  orientation:"left" for pf10 
+                            <p:menuitem value="Member" outcome="chooseLendMember.xhtml?i=0">
+                                <f:param name="i" value="0"/>
+                            </p:menuitem>
+                            <p:menuitem value="Books" outcome="chooseLendBooks.xhtml?i=1">
+                                <f:param name="i" value="1"/>
+                            </p:menuitem>
+                            <p:menuitem value="Confirmation" outcome="lendBookConfirmation.xhtml?i=2">
+                                <f:param name="i" value="2"/>
+                            </p:menuitem>
+                        </p:tabMenu>
+                    </div>-->
+        <!--        <ui:insert name="tab">Tab</ui:insert>-->
+    </ui:define>
 </ui:composition>
