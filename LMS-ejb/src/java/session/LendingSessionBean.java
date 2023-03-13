@@ -7,6 +7,7 @@ package session;
 
 import entity.Book;
 import entity.LendAndReturn;
+import entity.Member;
 import error.BookNotFoundException;
 import error.FineNotPaidException;
 import error.LendingNotFoundException;
@@ -23,6 +24,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -126,7 +128,39 @@ public class LendingSessionBean implements LendingSessionBeanLocal {
         }
     }
     
-    
+    @Override
+    public void lendBooks(Member m, List<Book> books) {
+        // check whether the books are available
+        for (Book b : books) {
+            if(!isBookAvailable(b)) {
+                //return error
+            }
+        }
+        //check that member only lend 2 books
+        int numBooksLended = numLendedBooksMember(m);
+        if(books.size() + numBooksLended > 2) {
+            //return error
+        }
+        
+        for (Book b : books) {
+            LendAndReturn lend = new LendAndReturn();
+            lend.setMemberId(m.getMemberId());
+            lend.setBookId(b.getBookId());
+            ZoneId defaultZoneId = ZoneId.systemDefault();
+            LocalDate todayLD = LocalDate.now();
+            Date todayDate = Date.from(todayLD.atStartOfDay(defaultZoneId).toInstant());
+            lend.setLendDate(todayDate);
+            lend.setFineAmount(BigDecimal.ZERO);
+            lend.setReturnDate(null);
+            lend.setBook(b);
+            lend.setMember(m);
+            b.getLending().add(lend);
+            m.getLending().add(lend);
+            em.persist(lend);
+            em.flush();
+        }
+    }
+
     @Override 
     public BigDecimal calculateFine(LendAndReturn lending) {
         long numDays = ChronoUnit.DAYS.between(lending.getLendDate().toInstant(), LocalDate.now());
@@ -173,5 +207,27 @@ public class LendingSessionBean implements LendingSessionBeanLocal {
         List<Book> books = retrieveAllBooks();
         books.removeAll(getLendedBooks());
         return books;
+    }
+    
+    @Override
+    public boolean isBookAvailable(Book book) {
+        List<Book> availableBooks = getAvailableBooks();
+        if(availableBooks.contains(book)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
+    public int numLendedBooksMember(Member m) {
+        int res = 0;
+        List<LendAndReturn> activeLendings = getActiveLendings();
+        for(LendAndReturn l : activeLendings) {
+            if(l.getMemberId().equals(m.getMemberId())) {
+                res++;
+            }
+        }
+        return res;
     }
 }

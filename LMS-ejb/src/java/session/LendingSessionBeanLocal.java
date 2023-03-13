@@ -7,6 +7,7 @@ package session;
 
 import entity.Book;
 import entity.LendAndReturn;
+import entity.Member;
 import error.BookNotFoundException;
 import error.FineNotPaidException;
 import error.LendingNotFoundException;
@@ -44,5 +45,11 @@ public interface LendingSessionBeanLocal {
     public List<Book> getAvailableBooks();
 
     public List<Book> retrieveBooksByISBN(String isbn);
+
+    public int numLendedBooksMember(Member m);
+
+    public boolean isBookAvailable(Book book);
+
+    public void lendBooks(Member m, List<Book> books);
     
 }
